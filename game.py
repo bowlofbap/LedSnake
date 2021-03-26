@@ -1,7 +1,5 @@
-import time, pygame, neopixel, board, argparse, random
-from rpi_ws281x import *
+import time, pygame, argparse, random
 from snake_node import snake
-
 
 # LED strip configuration:
 LED_COUNT      = 100      # Number of LED pixels.
@@ -29,6 +27,8 @@ LIGHTYELLOW = (175, 175,  20)
 CYAN        = (  0, 255, 255)
 MAGENTA     = (255,   0, 255)
 ORANGE      = (255, 100,   0)
+WIDTH = 10
+HEIGHT = 20
 
 COLORS      = (BLUE,GREEN,RED,YELLOW,CYAN,MAGENTA,ORANGE)
     
@@ -78,10 +78,12 @@ SIZE= 20
 #Switch to True when working with actual LED
 PI = False 
 
-pixel_pin = board.D18
-num_pixels = 100
-ORDER = neopixel.GRB
-pixels = neopixel.NeoPixel(pixel_pin, num_pixels, brightness=LED_BRIGHTNESS, auto_write=False,pixel_order=ORDER)
+if PI:
+    import neopixel, board
+    pixel_pin = board.D18
+    num_pixels = 100
+    ORDER = neopixel.GRB
+    pixels = neopixel.NeoPixel(pixel_pin, num_pixels, brightness=LED_BRIGHTNESS, auto_write=False,pixel_order=ORDER)
 
 # Define functions which animate LEDs in various ways.
         
@@ -95,8 +97,8 @@ def clear():
 #helper to translate the continuous strip into a grid
 def getPixelFromGrid(x, y):
     if y%2 == 0:
-        x = 9 - x
-    return 10 * y + x
+        x = WIDTH - 1 - x
+    return WIDTH * y + x
 
 #helper to draw pixels
 def drawPixel(x,y,color):
@@ -132,7 +134,7 @@ def updateScreen():
 #check if the snake hit the walls
 def checkWalls(currSnake):
     head = currSnake.getHead()
-    if head['x'] < 0 or head['x'] > 9 or head['y'] < 0 or head['y'] > 9:
+    if head['x'] < 0 or head['x'] > WIDTH-1 or head['y'] < 0 or head['y'] > HEIGHT-1:
         return True
     return False
 
@@ -162,8 +164,8 @@ def checkCollision(currSnake, x, y, checkHead = True):
 
 #called when a new apple needs to be spawned
 def moveApple(currSnake):
-    rx = random.randint(0, 9)
-    ry = random.randint(0, 9)
+    rx = random.randint(0, WIDTH-1)
+    ry = random.randint(0, HEIGHT-1)
     if not checkCollision(currSnake, rx, ry): #recursively check that we aren't in collision with the snake (not working btw)
         return {'x': rx, 'y': ry}
     else:
@@ -182,7 +184,7 @@ def main():
     if not PI:
         pygame.init()
         FPSCLOCK = pygame.time.Clock()
-        DISPLAYSURF = pygame.display.set_mode((10*SIZE, 10*SIZE))
+        DISPLAYSURF = pygame.display.set_mode((WIDTH*SIZE, HEIGHT*SIZE))
         BASICFONT = pygame.font.Font('freesansbold.ttf', 18)
         BIGFONT = pygame.font.Font('freesansbold.ttf', 100)
         pygame.display.set_caption('Pi Games')
