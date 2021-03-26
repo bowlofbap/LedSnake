@@ -75,6 +75,7 @@ TEXTCOLOR = WHITE
 TEXTSHADOWCOLOR = GRAY
 SIZE= 20
 
+#Switch to True when working with actual LED
 PI = False 
 
 pixel_pin = board.D18
