@@ -1,24 +1,6 @@
 from SnakeNode import SnakeNode
+import constants
 import random
-
-directions = {
-    "left" : {
-        'x': -1,
-        'y': 0
-    },
-    "right" : {
-        'x': 1,
-        'y': 0
-    },
-    "up" : {
-        'x': 0,
-        'y': 1
-    },
-    "down" : {
-        'x': 0,
-        'y': -1
-    },
-}
 
 blockedMovements = {
     "left": "right",
@@ -53,13 +35,16 @@ class SnakeGame:
     def getApple(self):
         return self._currentApple
 
+    def changeDirection(self, direction):
+        self._currentDirection = direction
+
     #goes one step into the game
     def proceed(self):
         mX = 0
         mY = 0
         
-        mX = directions[self._currentDirection]['x']
-        mY = directions[self._currentDirection]['y']
+        mX = constants.DIRECTIONS[self._currentDirection]['x']
+        mY = constants.DIRECTIONS[self._currentDirection]['y']
 
         if not self._PI:
             mY *= -1        

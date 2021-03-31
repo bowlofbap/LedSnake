@@ -1,4 +1,5 @@
 from SnakeGame import SnakeGame 
+from SnakeAI import SnakeAI
 import constants
 import pygame, time
 
@@ -14,12 +15,14 @@ class GameHandler:
     _DISPLAYSURF  = None
     _BASICFONT    = None
     _BIGFONT      = None
+    _ai           = False
 
-    def __init__(self, width, height, pi):
+    def __init__(self, width, height, pi = True, ai = False):
         self._game = SnakeGame(width, height, pi)
         self._pi = pi
         self._height = height
         self._width = width
+        self._ai = SnakeAI(self._game)
         if pi:
             import neopixel, board
             pixel_pin = board.D18
@@ -40,15 +43,18 @@ class GameHandler:
             pygame.display.update()
         
     def loop(self):
-        try:
-            while True:
-                time.sleep(1)
-                self._game.proceed()
-                self.update()
-        except KeyboardInterrupt:
-            self.clear()
-            self.updateScreen()
-
+        while True:
+            time.sleep(5)
+            self._game.proceed()
+            self.update()
+            if self._ai:
+                nextDirection = self._ai.getDirection()
+                self.processInput(nextDirection)
+                self._ai.getSnapshot()
+            
+    def processInput(self, input):
+        if constants.DIRECTIONS.get(input):
+            self._game.changeDirection(input)
 
     def drawPixel(self, x, y, color):
         if self._pi:

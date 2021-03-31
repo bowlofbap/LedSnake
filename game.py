@@ -5,9 +5,12 @@ from GameHandler import GameHandler
 PI = True 
 
 def main():
-    gameHandler = GameHandler(constants.WIDTH, constants.HEIGHT, PI)
-    gameHandler.loop()
-
+    gameHandler = GameHandler(constants.WIDTH, constants.HEIGHT, pi = PI, ai = True)
+    try:
+        gameHandler.loop()
+    except KeyboardInterrupt:
+        gameHandler.clear()
+        gameHandler.updateScreen()
 
 # Main program logic follows:
 if __name__ == '__main__':
