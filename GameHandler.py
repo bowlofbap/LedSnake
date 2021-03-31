@@ -1,7 +1,8 @@
+import sys
 from SnakeGame import SnakeGame 
-from SnakeAI import SnakeAI
 import constants
 import pygame, time
+from SnakeAI import SnakeAI
 
 class GameHandler:
     #abstraction to handle inputs
@@ -44,7 +45,7 @@ class GameHandler:
         
     def loop(self):
         while True:
-            time.sleep(5)
+            time.sleep(1)
             self._game.proceed()
             self.update()
             if self._ai:
