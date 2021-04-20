@@ -40,18 +40,17 @@ class GameHandler:
             self._BASICFONT = pygame.font.Font('freesansbold.ttf', 18)
             self._BIGFONT = pygame.font.Font('freesansbold.ttf', 100)
             pygame.display.set_caption('Pi Games')
-            self._DISPLAYSURF.fill(BGCOLOR)
+            self._DISPLAYSURF.fill(constants.BGCOLOR)
             pygame.display.update()
         
     def loop(self):
         while True:
-            time.sleep(1)
+            time.sleep(.2)
             self._game.proceed()
             self.update()
             if self._ai:
                 nextDirection = self._ai.getDirection()
                 self.processInput(nextDirection)
-                self._ai.getSnapshot()
             
     def processInput(self, input):
         if constants.DIRECTIONS.get(input):
@@ -65,7 +64,7 @@ class GameHandler:
             except:
                 print(str(x) + ' --- ' + str(y))   
         else:
-            pygame.draw.rect(DISPLAYSURF, constants.COLORS[color], (x*constants.SIZE+1, y*constants.SIZE+1, constants.SIZE-2, constants.SIZE-2))
+            pygame.draw.rect(self._DISPLAYSURF, constants.COLORS[color], (x*constants.SIZE+1, y*constants.SIZE+1, constants.SIZE-2, constants.SIZE-2))
 
     #helper to translate the continuous strip into a grid
     def getPixelFromGrid(self, x, y):
@@ -78,7 +77,7 @@ class GameHandler:
         if self._pi:
             self._pixels.fill((0,0,0))
         else:
-            self._DISPLAYSURF.fill(BGCOLOR)
+            self._DISPLAYSURF.fill(constants.BGCOLOR)
 
     #draw the snake
     def drawSnake(self):
