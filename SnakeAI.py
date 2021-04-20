@@ -5,6 +5,7 @@ class SnakeAI:
     _grid = []
     _head = None #dictionary of x: y:
     _destination = None 
+    _directionQueue = []
 
     def __init__(self, game):
         self._game = game
