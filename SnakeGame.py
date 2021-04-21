@@ -17,6 +17,7 @@ class SnakeGame:
     _PI = None
     _width = 0
     _height = 0
+    gameStatus = None
 
     def __init__(self, width, height, PI):
         self._width = width
@@ -28,6 +29,7 @@ class SnakeGame:
         self._resetSnake()
         self._moveApple()
         self._currentDirection = "right"
+        self.gameStatus = "playing"
 
     def getSnake(self):
         return self._currentSnake
@@ -59,7 +61,7 @@ class SnakeGame:
             
         snakeHead = self._currentSnake.getHead()
         if self._checkWalls() or self._checkCollision(snakeHead['x'], snakeHead['y'], False):
-            self.resetGame()
+            self.gameStatus = "lost"
 
     #kill the snek
     def _resetSnake(self):

@@ -45,12 +45,16 @@ class GameHandler:
         
     def loop(self):
         while True:
-            time.sleep(.05)
-            self._game.proceed()
-            self.update()
-            if self._ai:
-                nextDirection = self._ai.getDirection()
-                self.processInput(nextDirection)
+            if self._game.gameStatus == "playing":
+                time.sleep(.01)
+                self._game.proceed()
+                self.update()
+                if self._ai and not self._game.gameStatus == "lost":
+                    nextDirection = self._ai.getDirection()
+                    self.processInput(nextDirection)
+            else:
+                self._game.resetGame()
+                self._ai.refillQueue()
             
     def processInput(self, input):
         if constants.DIRECTIONS.get(input):
@@ -86,12 +90,12 @@ class GameHandler:
         snakeNodes = snake.getNodes()
         for snakeNode in snakeNodes[1:]:
             self.drawPixel(snakeNode['x'], snakeNode['y'], 1)
-            self.drawPixel(snakeHead['x'], snakeHead['y'], 2)
+        self.drawPixel(snakeHead['x'], snakeHead['y'], 4)
 
     #draw the apple
     def drawApple(self):
         apple = self._game.getApple()
-        self.drawPixel(apple['x'], apple['y'], 3)
+        self.drawPixel(apple['x'], apple['y'], 2)
 
     #update the leds/pixels
     def updateScreen(self):

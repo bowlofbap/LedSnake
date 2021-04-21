@@ -28,7 +28,11 @@ class SnakeAI:
         self._grid = []
         self._grid = [[0 for i in range(constants.WIDTH)] for j in range(constants.HEIGHT)]
         for node in snake.getNodes():
-            self._grid[node['y']][node['x']] = "s"
+            #if node['y'] <= constants.WIDTH and node['x'] <= constants.HEIGHT:
+            try:
+                self._grid[node['y']][node['x']] = "s"
+            except:
+                print(node['y'], node['x'])
         self._grid[apple['y']][apple['x']] = "a"
         self._head = snake.getHead()
         self._destination = Node(apple['x'], apple['y'], 0, None)
@@ -41,14 +45,24 @@ class SnakeAI:
         while True: #continue until destination node not reached
             lowestOpenNode = self.findLowestOpenNode(openSet)
             if lowestOpenNode == None:
-                print("No path")
-                return ["right"]
+                #find open node next to if possible
+                headNode = Node(self._head['x'], self._head['y'], 0, self._destination)
+                neighbors = self.lookAtNeighbors(headNode)
+                direction = "right"
+                mostOpenNodes = 0
+                for neighbor in neighbors:
+                    neighborOpenNodes = 0
+                    inNeighors = self.lookAtNeighbors(neighbor)
+                    for inNeighbor in inNeighors:
+                        neighborOpenNodes += len(self.lookAtNeighbors(inNeighbor))
+                    if neighborOpenNodes > mostOpenNodes:
+                        direction = self.retraceDirection(neighbor, headNode)
+                return [direction]
             elif Node.equals(lowestOpenNode, self._destination):
                 returningList = []
                 while lowestOpenNode.parent:
                     returningList.append(self.retraceDirection(lowestOpenNode, lowestOpenNode.parent))
                     lowestOpenNode = lowestOpenNode.parent
-                print("found")
                 return returningList
             else:
                 closedSet.add(lowestOpenNode)
