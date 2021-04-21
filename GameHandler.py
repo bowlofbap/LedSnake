@@ -45,7 +45,7 @@ class GameHandler:
         
     def loop(self):
         while True:
-            time.sleep(.2)
+            time.sleep(.05)
             self._game.proceed()
             self.update()
             if self._ai:

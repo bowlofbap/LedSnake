@@ -14,13 +14,9 @@ class SnakeAI:
         self._game = game
 
     def getDirection(self):
-        if self._directionQueue:
-            nextDirection = self._directionQueue.pop()
-            return nextDirection
-        else:
-            print("refilling")
-            self.refillQueue()
-            return self.getDirection()
+        self.refillQueue()
+        nextDirection = self._directionQueue.pop()
+        return nextDirection
 
     def refillQueue(self):
         self.getSnapshot()
@@ -46,7 +42,7 @@ class SnakeAI:
             lowestOpenNode = self.findLowestOpenNode(openSet)
             if lowestOpenNode == None:
                 print("No path")
-                return None
+                return ["right"]
             elif Node.equals(lowestOpenNode, self._destination):
                 returningList = []
                 while lowestOpenNode.parent:
@@ -73,13 +69,13 @@ class SnakeAI:
         return None
 
     def retraceDirection(self, fromNode, toNode):
-        x = fromNode.x - toNode.x
-        y = fromNode.y - toNode.y 
-        if x < 0:
+        y = fromNode.x - toNode.x
+        x = fromNode.y - toNode.y 
+        if y < 0:
             return "left"
-        elif x > 0:
-            return "right"
         elif y > 0:
+            return "right"
+        elif x < 0:
             return "down"
         else:
             return "up"
@@ -89,7 +85,6 @@ class SnakeAI:
         for node in openSet:
             if lowestNode == None or node.f < lowestNode.f:
                 lowestNode = node
-                print(node.g, node.f, lowestNode.f)
         return lowestNode
     
     def lookAtNeighbors(self, node):
