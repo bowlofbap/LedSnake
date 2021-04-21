@@ -2,10 +2,9 @@ import time, constants
 from GameHandler import GameHandler
 
 #Switch to True when working with actual LED
-PI = True 
 
 def main():
-    gameHandler = GameHandler(constants.WIDTH, constants.HEIGHT, pi = PI, ai = True)
+    gameHandler = GameHandler(constants.WIDTH, constants.HEIGHT, ai = True)
     try:
         gameHandler.loop()
     except KeyboardInterrupt:

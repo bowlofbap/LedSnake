@@ -14,15 +14,13 @@ class SnakeGame:
     _currentApple = None
     _currentSnake = None
     _currentDirection = None
-    _PI = None
     _width = 0
     _height = 0
     gameStatus = None
 
-    def __init__(self, width, height, PI):
+    def __init__(self, width, height):
         self._width = width
         self._height = height
-        self._PI = PI
         self.resetGame()
 
     def resetGame(self):
@@ -48,7 +46,7 @@ class SnakeGame:
         mX = constants.DIRECTIONS[self._currentDirection]['x']
         mY = constants.DIRECTIONS[self._currentDirection]['y']
 
-        if not self._PI:
+        if not constants.PI:
             mY *= -1        
 
         self._currentSnake.move(mX, mY)

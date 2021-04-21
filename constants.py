@@ -4,6 +4,8 @@ LED_BRIGHTNESS  = .35     # Set to 0 for darkest and 255 for brightest
 LED_INVERT      = False   # True to invert the signal (when using NPN transistor level shift)
 LED_CHANNEL     = 0       # set to '1' for GPIOs 13, 19, 41, 45 or
 
+PI = True
+
 #CONSTANTS
 BLANK = '.'
 #               R    G    B

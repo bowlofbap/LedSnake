@@ -18,13 +18,12 @@ class GameHandler:
     _BIGFONT      = None
     _ai           = False
 
-    def __init__(self, width, height, pi = True, ai = False):
-        self._game = SnakeGame(width, height, pi)
-        self._pi = pi
+    def __init__(self, width, height, ai = False):
+        self._game = SnakeGame(width, height) 
         self._height = height
         self._width = width
         self._ai = SnakeAI(self._game)
-        if pi:
+        if constants.PI:
             import neopixel, board
             pixel_pin = board.D18
             num_pixels = width * height
@@ -61,7 +60,7 @@ class GameHandler:
             self._game.changeDirection(input)
 
     def drawPixel(self, x, y, color):
-        if self._pi:
+        if constants.PI:
             try:
                 if (x>=0 and y>=0 and color >=0):
                     self._pixels[self.getPixelFromGrid(x,y)] = constants.COLORS[color]
@@ -78,7 +77,7 @@ class GameHandler:
 
     #blank the screen
     def clear(self):
-        if self._pi:
+        if constants.PI:
             self._pixels.fill((0,0,0))
         else:
             self._DISPLAYSURF.fill(constants.BGCOLOR)
@@ -99,7 +98,7 @@ class GameHandler:
 
     #update the leds/pixels
     def updateScreen(self):
-        if self._pi:
+        if constants.PI:
             self._pixels.show()
         else:
             pygame.display.update()
