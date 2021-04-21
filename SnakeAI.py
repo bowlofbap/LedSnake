@@ -83,17 +83,29 @@ class SnakeAI:
         return None
 
     def retraceDirection(self, fromNode, toNode):
-        y = fromNode.x - toNode.x
-        x = fromNode.y - toNode.y 
-        if y < 0:
-            return "left"
-        elif y > 0:
-            return "right"
-        elif x < 0:
-            return "down"
+        if constants.PI:
+            y = fromNode.x - toNode.x
+            x = fromNode.y - toNode.y 
+            if y < 0:
+                return "left"
+            elif y > 0:
+                return "right"
+            elif x < 0:
+                return "down"
+            else:
+                return "up"
         else:
-            return "up"
-
+            x = fromNode.x - toNode.x
+            y = fromNode.y - toNode.y 
+            if x < 0:
+                return "left"
+            elif x > 0:
+                return "right"
+            elif y > 0:
+                return "down"
+            else:
+                return "up"
+                
     def findLowestOpenNode(self, openSet):
         lowestNode = None
         for node in openSet:
