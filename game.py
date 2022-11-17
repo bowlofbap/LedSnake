@@ -1,8 +1,6 @@
 import time, constants
 from GameHandler import GameHandler
 
-#Switch to True when working with actual LED
-
 def main():
     gameHandler = GameHandler(constants.WIDTH, constants.HEIGHT, ai = True)
     try:

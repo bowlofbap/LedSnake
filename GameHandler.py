@@ -31,7 +31,7 @@ class GameHandler:
             self._pixels = neopixel.NeoPixel(pixel_pin, num_pixels, brightness=constants.LED_BRIGHTNESS, auto_write=False,pixel_order=order)
             pygame.init()
             #comment out once controller connected
-            pygame.display.set_mode((width*constants.SIZE, width*constants.SIZE))
+            screen = pygame.display.set_mode((1,1))
         else:
             pygame.init()
             self._FPSCLOCK = pygame.time.Clock()
@@ -41,19 +41,47 @@ class GameHandler:
             pygame.display.set_caption('Pi Games')
             self._DISPLAYSURF.fill(constants.BGCOLOR)
             pygame.display.update()
-        
+
     def loop(self):
         while True:
-            if self._game.gameStatus == "playing":
-                time.sleep(.01)
-                self._game.proceed()
-                self.update()
-                if self._ai and not self._game.gameStatus == "lost":
-                    nextDirection = self._ai.getDirection()
-                    self.processInput(nextDirection)
+            if not constants.DEBUG:
+                self.proceedLoop()
+                time.sleep(.05)
             else:
-                self._game.resetGame()
-                self._ai.refillQueue()
+                for event in pygame.event.get():
+                    nextDirection = None
+                    if event.type == pygame.KEYDOWN:
+                        if (event.key == pygame.K_w):
+                            nextDirection = "up"
+                        elif (event.key == pygame.K_a):
+                            nextDirection = "left"
+                        elif (event.key == pygame.K_s):
+                            nextDirection = "down"
+                        elif (event.key == pygame.K_d):
+                            nextDirection = "right"
+                        elif (event.key == pygame.K_ESCAPE):
+                            pygame.display.quit()
+                            pygame.quit()
+
+                        if nextDirection:
+                            self.processInput(nextDirection)
+                        else:
+                            nextDirection = self._ai.getDirection()
+                            self.processInput(nextDirection)
+                        self._game.proceed()
+                        self.update()
+
+    def proceedLoop(self):
+        if self._game.gameStatus == "playing":
+            self._game.proceed()
+            self.update()
+            if self._ai and not self._game.gameStatus == "lost":
+                nextDirection = self._ai.getDirection()
+                self.processInput(nextDirection)
+        else:
+            self._game.resetGame()
+            self._ai.refillQueue()
+
             
     def processInput(self, input):
         if constants.DIRECTIONS.get(input):

@@ -63,7 +63,7 @@ class SnakeGame:
 
     #kill the snek
     def _resetSnake(self):
-        self._currentSnake = SnakeNode(int(self._width/2),int(self._height/2),3)
+        self._currentSnake = SnakeNode(int(self._width/2),int(self._height/2),7)
 
     #check if the snake hit the walls
     def _checkWalls(self):
