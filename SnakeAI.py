@@ -125,6 +125,7 @@ class SnakeAI:
               neighbors.append(Node(pX, node.y, node.g+1, self._destination))
         for y in range(-1, 2):
             pY = node.y + y
+            #throws on this line
             if y != 0 and pY >= 0 and pY < constants.HEIGHT and self._grid[pY][node.x] != 's':
               neighbors.append(Node(node.x, pY, node.g+1, self._destination))
         return neighbors

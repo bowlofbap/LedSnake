@@ -31,9 +31,9 @@ class GameHandler:
             num_pixels = width * height
             order = neopixel.GRB
             self._pixels = neopixel.NeoPixel(pixel_pin, num_pixels, brightness=constants.LED_BRIGHTNESS, auto_write=False,pixel_order=order)
-            pygame.init()
-            #comment out once controller connected
-            screen = pygame.display.set_mode((1,1))
+            if (debug):
+                pygame.init()
+                screen = pygame.display.set_mode((1,1))
         else:
             pygame.init()
             self._FPSCLOCK = pygame.time.Clock()
@@ -80,7 +80,7 @@ class GameHandler:
                             self.update()
 
     def proceedLoop(self):
-        self._game.resetGame()
+        self._ai.refillQueue()
         if self._game.gameStatus == "playing":
             self._game.proceed()
             self.update()
@@ -88,7 +88,7 @@ class GameHandler:
                 nextDirection = self._ai.getDirection()
                 self.processInput(nextDirection)
         else:
-            self._ai.refillQueue()
+            self._game.resetGame()
 
             
     def processInput(self, input):
