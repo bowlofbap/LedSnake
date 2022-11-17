@@ -37,7 +37,7 @@ class SnakeAI:
         self._head = snake.getHead()
         self._destination = Node(apple['x'], apple['y'], 0, None)
 
-    def getPath(self):
+    def getPath(self, return_as_nodes = False):
         openSet = set()
         closedSet = set()
         startingNode = Node(self._head['x'], self._head['y'], 0, self._destination)
@@ -59,9 +59,13 @@ class SnakeAI:
                         direction = self.retraceDirection(neighbor, headNode)
                 return [direction]
             elif Node.equals(lowestOpenNode, self._destination):
+                #made it to the end
                 returningList = []
                 while lowestOpenNode.parent:
-                    returningList.append(self.retraceDirection(lowestOpenNode, lowestOpenNode.parent))
+                    if not return_as_nodes:
+                        returningList.append(self.retraceDirection(lowestOpenNode, lowestOpenNode.parent))
+                    else:
+                        returningList.append(lowestOpenNode)
                     lowestOpenNode = lowestOpenNode.parent
                 return returningList
             else:

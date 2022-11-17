@@ -17,12 +17,14 @@ class GameHandler:
     _BASICFONT    = None
     _BIGFONT      = None
     _ai           = False
+    _debug        = False
 
-    def __init__(self, width, height, ai = False):
+    def __init__(self, width, height, ai = False, debug = False):
         self._game = SnakeGame(width, height) 
         self._height = height
         self._width = width
         self._ai = SnakeAI(self._game)
+        self._debug = debug
         if constants.PI:
             import neopixel, board
             pixel_pin = board.D18
@@ -43,8 +45,9 @@ class GameHandler:
             pygame.display.update()
 
     def loop(self):
+        self.update()
         while True:
-            if not constants.DEBUG:
+            if not self._debug:
                 self.proceedLoop()
                 time.sleep(.05)
             else:
@@ -62,16 +65,22 @@ class GameHandler:
                         elif (event.key == pygame.K_ESCAPE):
                             pygame.display.quit()
                             pygame.quit()
-
-                        if nextDirection:
-                            self.processInput(nextDirection)
+                        
+                        if (event.key == pygame.K_b):
+                            self._ai.refillQueue()
+                            self.toggleAiPath()
                         else:
-                            nextDirection = self._ai.getDirection()
-                            self.processInput(nextDirection)
-                        self._game.proceed()
-                        self.update()
+                            self._ai.refillQueue()
+                            if nextDirection:
+                                self.processInput(nextDirection)
+                            else:
+                                nextDirection = self._ai.getDirection()
+                                self.processInput(nextDirection)
+                            self._game.proceed()
+                            self.update()
 
     def proceedLoop(self):
+        self._game.resetGame()
         if self._game.gameStatus == "playing":
             self._game.proceed()
             self.update()
@@ -79,7 +88,6 @@ class GameHandler:
                 nextDirection = self._ai.getDirection()
                 self.processInput(nextDirection)
         else:
-            self._game.resetGame()
             self._ai.refillQueue()
 
             
@@ -110,6 +118,16 @@ class GameHandler:
         else:
             self._DISPLAYSURF.fill(constants.BGCOLOR)
 
+    def toggleAiPath(self):
+        path = self._ai.getPath(return_as_nodes = True)
+        if path:
+            path = path[::-1]
+            for pathNode in path[:-1]:
+                time.sleep(.05)
+                self.drawPixel(pathNode.x, pathNode.y, 3) 
+                self.updateScreen()
+        else:
+            print("No Path")
     #draw the snake
     def drawSnake(self):
         snake = self._game.getSnake()

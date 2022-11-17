@@ -1,8 +1,8 @@
-import time, constants
+import time, constants, argparse
 from GameHandler import GameHandler
 
-def main():
-    gameHandler = GameHandler(constants.WIDTH, constants.HEIGHT, ai = True)
+def main(debug):
+    gameHandler = GameHandler(constants.WIDTH, constants.HEIGHT, ai = True, debug = debug)
     try:
         gameHandler.loop()
     except KeyboardInterrupt:
@@ -11,5 +11,9 @@ def main():
 
 # Main program logic follows:
 if __name__ == '__main__':
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--d", type=bool, help="enables step by step, press b to show path, esc to quit",
+                        nargs='?', default=False)
+    args = parser.parse_args()
+    main(args.d)
 
