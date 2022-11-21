@@ -122,12 +122,12 @@ class SnakeAI:
         for x in range(-1, 2):
             pX = node.x + x
             if x != 0 and pX >= 0 and pX < constants.WIDTH and self._grid[node.y][pX] != 's':
-              neighbors.append(Node(pX, node.y, node.g+1, self._destination))
+                neighbors.append(Node(pX, node.y, node.g+1, self._destination))
         for y in range(-1, 2):
             pY = node.y + y
             #throws on this line
             if y != 0 and pY >= 0 and pY < constants.HEIGHT and self._grid[pY][node.x] != 's':
-              neighbors.append(Node(node.x, pY, node.g+1, self._destination))
+                neighbors.append(Node(node.x, pY, node.g+1, self._destination))
         return neighbors
 
     def setContains(self, neighbor, chosenSet):

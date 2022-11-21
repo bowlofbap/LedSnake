@@ -51,6 +51,7 @@ class GameHandler:
                 self.proceedLoop()
                 time.sleep(.05)
             else:
+                #self.testBoard()
                 for event in pygame.event.get():
                     nextDirection = None
                     if event.type == pygame.KEYDOWN:
@@ -80,8 +81,8 @@ class GameHandler:
                             self.update()
 
     def proceedLoop(self):
-        self._ai.refillQueue()
         if self._game.gameStatus == "playing":
+            self._ai.refillQueue()
             self._game.proceed()
             self.update()
             if self._ai and not self._game.gameStatus == "lost":
@@ -105,11 +106,31 @@ class GameHandler:
         else:
             pygame.draw.rect(self._DISPLAYSURF, constants.COLORS[color], (x*constants.SIZE+1, y*constants.SIZE+1, constants.SIZE-2, constants.SIZE-2))
 
+    def testBoard(self):
+        for y in range(self._height):
+            for x in range(self._width):
+                #print((x,y))
+                #print(self.getPixelFromGrid(x,y))
+                self.drawPixel(x, y, 3)
+                time.sleep(.1)
+                self.updateScreen()
+
     #helper to translate the continuous strip into a grid
-    def getPixelFromGrid(self, x, y):
+    #works for following setup
+
+    # 9 10 11
+    # 8 7 6
+    # 3 4 5
+    # 2 1 0
+    def getPixelFromGridOld(self, x, y):
         if y%2 == 0:
             x = self._width - 1 - x
         return self._width * y + x
+
+    def getPixelFromGrid(self, x, y):
+        if (x%2 == 0):
+            y = self._height - y - 1
+        return self._height*(self._width - x - 1) + y
 
     #blank the screen
     def clear(self):
@@ -118,6 +139,7 @@ class GameHandler:
         else:
             self._DISPLAYSURF.fill(constants.BGCOLOR)
 
+    #debug mode to show the pathfinding path
     def toggleAiPath(self):
         path = self._ai.getPath(return_as_nodes = True)
         if path:
@@ -128,6 +150,7 @@ class GameHandler:
                 self.updateScreen()
         else:
             print("No Path")
+
     #draw the snake
     def drawSnake(self):
         snake = self._game.getSnake()
