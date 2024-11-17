@@ -1,13 +1,12 @@
-import sys
-sys.path.insert(0, '/home/pi/WebServers/gridWebServer/pythonFiles')
-import time, constants, argparse
+import argparse
+from constants import WIDTH, HEIGHT
 from GameHandler import GameHandler
 
 #old way to run the game if you wanna run it manually, go through this file and run game.py
 
 def run_game(debug):
     print(debug)
-    gameHandler = GameHandler(constants.WIDTH, constants.HEIGHT, ai = False, multiplayer = True, debug = debug)
+    gameHandler = GameHandler(WIDTH, HEIGHT, ai = False, multiplayer = True, debug = debug)
     try:
         gameHandler.startGame()
     except KeyboardInterrupt:

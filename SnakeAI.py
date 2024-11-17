@@ -1,6 +1,4 @@
-import sys
-sys.path.insert(0, '/home/pi/WebServers/gridWebServer/pythonFiles')
-import constants
+from constants import WIDTH, HEIGHT, PI
 from Node import Node
 
 #singeplayer snake ai game
@@ -29,9 +27,9 @@ class SnakeAI:
         snake = self._game.getSnakes()[0]
         apple = self._game.getApples()[0]
         self._grid = []
-        self._grid = [[0 for i in range(constants.WIDTH)] for j in range(constants.HEIGHT)]
+        self._grid = [[0 for i in range(WIDTH)] for j in range(HEIGHT)]
         for node in snake.getNodes():
-            #if node['y'] <= constants.WIDTH and node['x'] <= constants.HEIGHT:
+            #if node['y'] <= WIDTH and node['x'] <= HEIGHT:
             try:
                 self._grid[node['y']][node['x']] = "s"
             except:
@@ -90,7 +88,7 @@ class SnakeAI:
         return None
 
     def retraceDirection(self, fromNode, toNode):
-        if constants.PI:
+        if PI:
             y = fromNode.x - toNode.x
             x = fromNode.y - toNode.y 
             if y < 0:
@@ -124,12 +122,12 @@ class SnakeAI:
         neighbors = []
         for x in range(-1, 2):
             pX = node.x + x
-            if x != 0 and pX >= 0 and pX < constants.WIDTH and self._grid[node.y][pX] != 's':
+            if x != 0 and pX >= 0 and pX < WIDTH and self._grid[node.y][pX] != 's':
                 neighbors.append(Node(pX, node.y, node.g+1, self._destination))
         for y in range(-1, 2):
             pY = node.y + y
             #throws on this line
-            if y != 0 and pY >= 0 and pY < constants.HEIGHT and self._grid[pY][node.x] != 's':
+            if y != 0 and pY >= 0 and pY < HEIGHT and self._grid[pY][node.x] != 's':
                 neighbors.append(Node(node.x, pY, node.g+1, self._destination))
         return neighbors
 

@@ -1,7 +1,5 @@
-import sys
-sys.path.insert(0, '/home/pi/WebServers/gridWebServer/pythonFiles')
 from SnakeNode import SnakeNode
-import constants
+from constants import *
 import random
 
 blockedMovements = {
@@ -37,7 +35,7 @@ class SnakeGame:
     def changeDirection(self, snakeIndex, direction):
         snake = self._snakes[snakeIndex]
         #need to improve this, if the player quickly inputs then they can still kill themselves
-        if abs(constants.DIRECTIONS[snake.getDirection()]['x']) == abs(constants.DIRECTIONS[direction]['x']):
+        if abs(DIRECTIONS[snake.getDirection()]['x']) == abs(DIRECTIONS[direction]['x']):
             print("Same direction or would kill itself on snake "+ str(snakeIndex))
         else:
             snake.setDirection(direction)
@@ -77,10 +75,10 @@ class SnakeGame:
     #move all snakes
     def _moveSnakes(self):
         for snake in self._snakes:
-            mX = constants.DIRECTIONS[snake.getDirection()]['x']
-            mY = constants.DIRECTIONS[snake.getDirection()]['y']
+            mX = DIRECTIONS[snake.getDirection()]['x']
+            mY = DIRECTIONS[snake.getDirection()]['y']
 
-            if not constants.PI:
+            if not PI:
                 mY *= -1        
             snake.move(mX, mY)
 
@@ -91,10 +89,10 @@ class SnakeGame:
         self._snakes = []
         for i in range(self._numSnakes):
             if i%2 == 0:
-                newSnake = SnakeNode(initX, self._height - (initY * (i+1)), constants.INITIAL_SIZE, i, False)
+                newSnake = SnakeNode(initX, self._height - (initY * (i+1)), INITIAL_SIZE, i, False)
                 newSnake.setDirection("right")
             else:
-                newSnake = SnakeNode(self._width - initX, self._height - (initY * (i+1)), constants.INITIAL_SIZE, i, True)
+                newSnake = SnakeNode(self._width - initX, self._height - (initY * (i+1)), INITIAL_SIZE, i, True)
                 newSnake.setDirection("left")
             self._snakes.append(newSnake)
 

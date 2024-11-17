@@ -1,10 +1,8 @@
-import sys
-sys.path.insert(0, '/home/pi/WebServers/gridWebServer/pythonFiles')
 from SnakeGame import SnakeGame 
-import constants
+from SnakeAI import SnakeAI
+from constants import *
 import pygame, time
 import math
-from SnakeAI import SnakeAI
 
 class GameHandler:
     #abstraction to handle inputs
@@ -31,21 +29,21 @@ class GameHandler:
         self._ai = SnakeAI(self._game) if ai else False
         self._debug = debug
         self._multiplayer = multiplayer
-        if constants.PI:
+        if PI:
             import neopixel, board
             pixel_pin = board.D18
             num_pixels = width * height
             order = neopixel.GRB
-            self._pixels = neopixel.NeoPixel(pixel_pin, num_pixels, brightness=constants.LED_BRIGHTNESS, auto_write=False,pixel_order=order)
+            self._pixels = neopixel.NeoPixel(pixel_pin, num_pixels, brightness=LED_BRIGHTNESS, auto_write=False,pixel_order=order)
             pygame.init()
         else:
             pygame.init()
             self._FPSCLOCK = pygame.time.Clock()
-            self._DISPLAYSURF = pygame.display.set_mode((width*constants.SIZE, height*constants.SIZE))
+            self._DISPLAYSURF = pygame.display.set_mode((width*SIZE, height*SIZE))
             self._BASICFONT = pygame.font.Font('freesansbold.ttf', 18)
             self._BIGFONT = pygame.font.Font('freesansbold.ttf', 100)
             pygame.display.set_caption('Pi Games')
-            self._DISPLAYSURF.fill(constants.BGCOLOR)
+            self._DISPLAYSURF.fill(BGCOLOR)
             pygame.display.update()
 
     def startGame(self):
@@ -102,7 +100,7 @@ class GameHandler:
                             direction = self.convertBTInputToDirection(axis, position)
                             if direction is not None:
                                 self.processInput(joystick_id, direction)
-                if current_time - self._last_move_time >= constants.SNAKE_SPEED:
+                if current_time - self._last_move_time >= SNAKE_SPEED:
                     self._last_move_time = current_time  # reset move timer
                     self._game.proceed()
                 self.update()
@@ -163,7 +161,7 @@ class GameHandler:
         closest_direction = None
         smallest_distance = float('inf')
 
-        for direction, vector in constants.BLUETOOTH_DIRECTIONS.items():
+        for direction, vector in BLUETOOTH_DIRECTIONS.items():
             # Calculate the Euclidean distance between the input and each direction vector
             distance = math.sqrt((rawInputX - vector['x']) ** 2 + (rawInputY - vector['y']) ** 2)
             
@@ -174,18 +172,18 @@ class GameHandler:
         return closest_direction
 
     def processInput(self, snakeNumber, input):
-        if constants.DIRECTIONS.get(input):
+        if DIRECTIONS.get(input):
             self._game.changeDirection(snakeNumber, input)
 
     def drawPixel(self, x, y, color):
-        if constants.PI:
+        if PI:
             try:
                 if (x>=0 and y>=0 and color >=0):
-                    self._pixels[self.getPixelFromGrid(x,y)] = constants.COLORS[color]
+                    self._pixels[self.getPixelFromGrid(x,y)] = COLORS[color]
             except:
                 print(str(x) + ' --- ' + str(y))   
         else:
-            pygame.draw.rect(self._DISPLAYSURF, constants.COLORS[color], (x*constants.SIZE+1, y*constants.SIZE+1, constants.SIZE-2, constants.SIZE-2))
+            pygame.draw.rect(self._DISPLAYSURF, COLORS[color], (x*SIZE+1, y*SIZE+1, SIZE-2, SIZE-2))
 
     def testBoard(self):
         for y in range(self._height):
@@ -211,10 +209,10 @@ class GameHandler:
 
     #blank the screen
     def clear(self):
-        if constants.PI:
+        if PI:
             self._pixels.fill((0,0,0))
         else:
-            self._DISPLAYSURF.fill(constants.BGCOLOR)
+            self._DISPLAYSURF.fill(BGCOLOR)
 
     #debug mode to show the pathfinding path
     def toggleAiPath(self):
@@ -233,7 +231,7 @@ class GameHandler:
         snakeNodes = snake.getNodes()
         snakeNumber = snake.getPlayerNumber()
         for snakeNode in snakeNodes[1:]:
-            snakeColor = constants.SNAKE_COLORS[snakeNumber]
+            snakeColor = SNAKE_COLORS[snakeNumber]
             self.drawPixel(snakeNode['x'], snakeNode['y'], snakeColor)
         self.drawPixel(snakeHead['x'], snakeHead['y'], 4)
 
@@ -251,7 +249,7 @@ class GameHandler:
 
     #update the leds/pixels
     def updateScreen(self):
-        if constants.PI:
+        if PI:
             self._pixels.show()
         else:
             pygame.display.update()
