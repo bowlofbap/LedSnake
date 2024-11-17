@@ -20,7 +20,6 @@ class SnakeGame:
         self._passWalls = passWalls
         self._numSnakes = numSnakes
         self._currentDirection = None
-        self._passWalls = False
         self.gameStatus = None
         self.resetGame()
 
