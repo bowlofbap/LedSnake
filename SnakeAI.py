@@ -1,6 +1,9 @@
+import sys
+sys.path.insert(0, '/home/pi/WebServers/gridWebServer/pythonFiles')
 import constants
 from Node import Node
 
+#singeplayer snake ai game
 class SnakeAI:
     _game = None
     _grid = []
@@ -23,8 +26,8 @@ class SnakeAI:
         self._directionQueue = self.getPath()
 
     def getSnapshot(self):
-        snake = self._game.getSnake()
-        apple = self._game.getApple()
+        snake = self._game.getSnakes()[0]
+        apple = self._game.getApples()[0]
         self._grid = []
         self._grid = [[0 for i in range(constants.WIDTH)] for j in range(constants.HEIGHT)]
         for node in snake.getNodes():
@@ -35,7 +38,7 @@ class SnakeAI:
                 print(node['y'], node['x'])
         self._grid[apple['y']][apple['x']] = "a"
         self._head = snake.getHead()
-        self._destination = Node(apple['x'], apple['y'], 0, None)
+        self._destination = Node(apple['x'], apple['y'], 0, False)
 
     def getPath(self, return_as_nodes = False):
         openSet = set()

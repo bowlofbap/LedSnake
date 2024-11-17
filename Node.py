@@ -1,7 +1,4 @@
 class Node:
-    x = None
-    y = None
-    g = None
     f = None
     destination = None
     parent = None
@@ -12,13 +9,13 @@ class Node:
         self.g = g
         if destination: 
             self.destination = destination
-            self.calcF()
+            self.f = self.calcF()
         else:
-            f = 0
+            self.f = 0
     
     def calcF(self):
         h = abs(self.x - self.destination.x) + abs(self.y - self.destination.y)
-        self.f = self.g + h
+        return self.g + h
 
     @staticmethod
     def equals(node1, node2):

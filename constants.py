@@ -1,6 +1,6 @@
 LED_FREQ_HZ     = 800000  # LED signal frequency in hertz (usually 800khz)
 LED_DMA         = 10      # DMA channel to use for generating signal (try 10)
-LED_BRIGHTNESS  = .35     # Set to 0 for darkest and 255 for brightest
+LED_BRIGHTNESS  = 20     # Set to 0 for darkest and 255 for brightest
 LED_INVERT      = False   # True to invert the signal (when using NPN transistor level shift)
 LED_CHANNEL     = 0       # set to '1' for GPIOs 13, 19, 41, 45 or
 
@@ -26,6 +26,9 @@ ORANGE      = (255, 100,   0)
 
 COLORS      = (BLUE,GREEN,RED,YELLOW,CYAN,MAGENTA,ORANGE)
 
+SNAKE_COLORS = [1,6]
+INITIAL_SIZE = 4
+
 WIDTH       = 10
 HEIGHT      = 20
  
@@ -40,6 +43,7 @@ KEY_MAPPING = {
     "100": "right"
 }
 
+#used to direct the snake itself
 DIRECTIONS = {
     "left" : {
         'x': -1,
@@ -59,8 +63,29 @@ DIRECTIONS = {
     },
 }
 
+#used to parse the data from bluetooth controllers (x for axis, y for value)
+BLUETOOTH_DIRECTIONS = {
+    "left" : {
+        'x': 0,
+        'y': -1
+    },
+    "right" : {
+        'x': 0,
+        'y': 1
+    },
+    "up" : {
+        'x': 1,
+        'y': -1
+    },
+    "down" : {
+        'x': 1,
+        'y': 1
+    },
+}
+
 BORDERCOLOR = BLUE
 BGCOLOR = BLACK
 TEXTCOLOR = WHITE
 TEXTSHADOWCOLOR = GRAY
 SIZE = 20
+SNAKE_SPEED = 0.1

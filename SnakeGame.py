@@ -1,3 +1,5 @@
+import sys
+sys.path.insert(0, '/home/pi/WebServers/gridWebServer/pythonFiles')
 from SnakeNode import SnakeNode
 import constants
 import random
@@ -10,90 +12,159 @@ blockedMovements = {
 }
 
 class SnakeGame:
-
-    _currentApple = None
-    _currentSnake = None
-    _currentDirection = None
-    _width = 0
-    _height = 0
-    gameStatus = None
-
-    def __init__(self, width, height):
+    def __init__(self, width, height, passWalls, numSnakes):
+        self._apples = []
+        self._snakes = []
         self._width = width
         self._height = height
+        self._passWalls = passWalls
+        self._numSnakes = numSnakes
+        self._currentDirection = None
+        self._passWalls = False
+        self.gameStatus = None
         self.resetGame()
 
     def resetGame(self):
-        self._resetSnake()
-        self._moveApple()
-        self._currentDirection = "right"
+        self._resetAllSnakes()
+        self._resetApples()
         self.gameStatus = "playing"
 
-    def getSnake(self):
-        return self._currentSnake
+    def getSnakes(self):
+        return self._snakes
     
-    def getApple(self):
-        return self._currentApple
+    def getApples(self):
+        return self._apples
 
-    def changeDirection(self, direction):
-        self._currentDirection = direction
+    def changeDirection(self, snakeIndex, direction):
+        snake = self._snakes[snakeIndex]
+        #need to improve this, if the player quickly inputs then they can still kill themselves
+        if abs(constants.DIRECTIONS[snake.getDirection()]['x']) == abs(constants.DIRECTIONS[direction]['x']):
+            print("Same direction or would kill itself on snake "+ str(snakeIndex))
+        else:
+            snake.setDirection(direction)
 
     #goes one step into the game
     def proceed(self):
-        mX = 0
-        mY = 0
-        
-        mX = constants.DIRECTIONS[self._currentDirection]['x']
-        mY = constants.DIRECTIONS[self._currentDirection]['y']
-
-        if not constants.PI:
-            mY *= -1        
-
-        self._currentSnake.move(mX, mY)
-
-        ateApple = self._checkApple()
-        if ateApple:
-            self._moveApple()
-        else:
-            self._currentSnake.cutTail()
+        self._moveSnakes()
+        snakeAppleStatus = self._checkApples()
+        for status in snakeAppleStatus:
+            if status['appleEaten'] == True:
+                self._moveApple(status['appleIndex'])
+            else:
+                self._snakes[status['snakeIndex']].cutTail()
             
-        snakeHead = self._currentSnake.getHead()
-        if self._checkWalls() or self._checkCollision(snakeHead['x'], snakeHead['y'], False):
-            self.gameStatus = "lost"
+        self._checkSnakeStatuses()
+
+    #see if snakes are in walls or collided
+    def _checkSnakeStatuses(self):
+        for snake in self._snakes:
+            snakeHead = snake.getHead()
+            if self._checkWalls(snake):
+                if self._passWalls:
+                    if snakeHead['x'] < 0:
+                        snakeHead['x'] = self._width-1
+                    elif snakeHead['x'] > self._width-1:
+                        snakeHead['x'] = 0
+                    elif snakeHead['y'] < 0:
+                        snakeHead['y'] = self._height-1
+                    elif snakeHead['y'] > self._height-1:
+                        snakeHead['y'] = 0
+                else:
+                    self.gameStatus = "lost"
+            if self._checkCollision(snakeHead['x'], snakeHead['y'], snake.getPlayerNumber(), True) or self._checkCollision(snakeHead['x'], snakeHead['y'], snake.getPlayerNumber(), False):
+                print("Player number " + str(snake.getPlayerNumber()+1) + " lost!")
+                self.gameStatus = "lost" #change this later to make the other player win
+
+    #move all snakes
+    def _moveSnakes(self):
+        for snake in self._snakes:
+            mX = constants.DIRECTIONS[snake.getDirection()]['x']
+            mY = constants.DIRECTIONS[snake.getDirection()]['y']
+
+            if not constants.PI:
+                mY *= -1        
+            snake.move(mX, mY)
 
     #kill the snek
-    def _resetSnake(self):
-        self._currentSnake = SnakeNode(int(self._width/2),int(self._height/2),7)
+    def _resetAllSnakes(self):
+        initX = int(self._width/(self._numSnakes+1))
+        initY = int(self._height/(self._numSnakes+1))
+        self._snakes = []
+        for i in range(self._numSnakes):
+            if i%2 == 0:
+                newSnake = SnakeNode(initX, self._height - (initY * (i+1)), constants.INITIAL_SIZE, i, False)
+                newSnake.setDirection("right")
+            else:
+                newSnake = SnakeNode(self._width - initX, self._height - (initY * (i+1)), constants.INITIAL_SIZE, i, True)
+                newSnake.setDirection("left")
+            self._snakes.append(newSnake)
+
+    def _resetApples(self):
+        for i in range(self._numSnakes):
+            self._moveApple(i)
 
     #check if the snake hit the walls
-    def _checkWalls(self):
-        head = self._currentSnake.getHead()
+    def _checkWalls(self, snake):
+        head = snake.getHead()
         if head['x'] < 0 or head['x'] > self._width-1 or head['y'] < 0 or head['y'] > self._height-1:
             return True
         return False
 
-    #check if the snake head is in the apple
-    def _checkApple(self):
-        head = self._currentSnake.getHead()
-        if head['x'] == self._currentApple['x'] and head['y'] == self._currentApple['y']:
-            return True
-        return False
+    #check if the snakes heads are in the apple(s)
+    #returns as [{'snakeIndex': index, 'appleIndex': index}]
+    def _checkApples(self):
+        snakeStatuses = []
+        for snakeIndex in range(len(self._snakes)):
+            foundCollisions = {'snakeIndex': snakeIndex, 'appleIndex': 0, 'appleEaten': False}
+            snakeStatuses.append(foundCollisions)
+            for appleIndex in range(len(self._apples)):
+                apple = self._apples[appleIndex]
+                aX = apple['x']
+                aY = apple['y']
+                snake = self._snakes[snakeIndex]
+                head = snake.getHead()
+                if head['x'] == aX and head['y'] == aY:
+                    foundCollisions['appleIndex'] = appleIndex
+                    foundCollisions['appleEaten'] = True
+        return snakeStatuses
 
-    #check for collision, head argument is if you want to include the head in the collision detection
-    def _checkCollision(self, x, y, shouldCheckHead = True):
-        nodes = self._currentSnake.getNodes()
-        if not shouldCheckHead and len(nodes) > 1:
+    #check for collision, checkSelf is if you want to check own collisions
+    def _checkCollision(self, x, y, selfIndex, checkSelf = False):
+        if checkSelf:
+            return self._returnCollisionResults(x, y, selfIndex, checkSelf)
+        else:
+            for snakeIndex in range(len(self._snakes)):
+                if snakeIndex != selfIndex:
+                    return self._returnCollisionResults(x, y, snakeIndex, checkSelf)
+
+    def _returnCollisionResults(self, x, y, snakeIndex, checkSelf):
+        snake = self._snakes[snakeIndex]
+        nodes = snake.getNodes()
+        if checkSelf and len(nodes) > 1:
             nodes = nodes[1:]
         for node in nodes:
             if node['x'] == x and node['y'] == y:
                 return True
         return False
+    
+    #ensures that apples don't spawn same spot, pass in the appleIndex you want to check because that apple will be disappearing anyways
+    def _checkAppleCollision(self, appleIndex, rx, ry):
+        if appleIndex >= len(self._apples): return False
+        checkApple = self._apples[appleIndex]
+        for apple in self._apples:
+            if apple != checkApple:
+                if apple['x'] == rx and apple['y'] == ry:
+                    return True
+        return False
 
     #called when a new apple needs to be spawned
-    def _moveApple(self):
+    def _moveApple(self, appleIndex):
         rx = random.randint(0, self._width-1)
         ry = random.randint(0, self._height-1)
-        if not self._checkCollision(rx, ry): #recursively check that we aren't in collision with the snake (not working btw)
-            self._currentApple = {'x': rx, 'y': ry}
+        if not self._checkCollision(rx, ry, None) and not self._checkAppleCollision(appleIndex, rx, ry): #recursively check that we aren't in collision with the snake (not working btw)
+            if appleIndex >= len(self._apples):
+                # Extend the list with None or empty dicts up to the required index
+                self._apples.extend([None] * (appleIndex - len(self._apples) + 1))
+            self._apples[appleIndex] = {'x': rx, 'y': ry}
         else:
-            self._moveApple()
+            self._moveApple(appleIndex)
