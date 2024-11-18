@@ -1,5 +1,5 @@
-from constants import WIDTH, HEIGHT, PI
-from Node import Node
+from .constants import WIDTH, HEIGHT, PI
+from .Node import Node
 
 #singeplayer snake ai game
 class SnakeAI:

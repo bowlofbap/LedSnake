@@ -1,5 +1,5 @@
-from SnakeNode import SnakeNode
-from constants import *
+from .SnakeNode import SnakeNode
+from .constants import *
 import random
 
 blockedMovements = {

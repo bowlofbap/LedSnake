@@ -1,6 +1,6 @@
-from constants import WIDTH, HEIGHT
+from .constants import WIDTH, HEIGHT
 import argparse
-from GameHandler import GameHandler
+from .GameHandler import GameHandler
 
 #old way to run the game if you wanna run it manually, go through this file and run game.py
 

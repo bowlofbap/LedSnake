@@ -1,6 +1,6 @@
-from SnakeGame import SnakeGame 
-from SnakeAI import SnakeAI
-from constants import *
+from .SnakeGame import SnakeGame 
+from .SnakeAI import SnakeAI
+from .constants import *
 import pygame, time
 import math
 
