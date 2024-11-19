@@ -91,6 +91,7 @@ class GameHandler:
                     nextDirection = self._ai.getDirection()
                     self.processInput(0, nextDirection)
                 else:
+                    #TODO: Make this so the game updates on action done, so that snake moves immediately
                     for event in pygame.event.get():
                         if event.type == pygame.JOYAXISMOTION:
                             joystick_id = event.joy   # Joystick ID
