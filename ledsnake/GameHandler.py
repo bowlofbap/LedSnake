@@ -22,7 +22,7 @@ class GameHandler:
         self._clock             = None
         self._last_move_time    = None
         self._joystick_detected = False
-        self._running           = False
+        self._running           = True
 
         self._joysticks         = []
         self._game = SnakeGame(width, height, True, 2 if multiplayer else 1) 
