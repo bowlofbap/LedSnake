@@ -1,12 +1,12 @@
 from .SnakeGame import SnakeGame 
 from .SnakeAI import SnakeAI
 from .constants import *
+from .ControllerMap import ControllerMap
 import pygame, time
 import math
 
 class GameHandler:
     #abstraction to handle inputs
-
 
     def __init__(self, width, height, ai = False, multiplayer = False, debug = False):
         self._bluetooth         = True
@@ -22,6 +22,8 @@ class GameHandler:
         self._clock             = None
         self._last_move_time    = None
         self._joystick_detected = False
+        self._running           = False
+
         self._joysticks         = []
         self._game = SnakeGame(width, height, True, 2 if multiplayer else 1) 
         self._height = height
@@ -81,7 +83,7 @@ class GameHandler:
     def loop(self):
         self.update()
         self._last_move_time = time.time()
-        while True:
+        while self._running:
             current_time = time.time()
             if self._game.gameStatus == "lost":
                 self._game.resetGame()
@@ -89,7 +91,7 @@ class GameHandler:
                 if self._ai:
                     self._ai.refillQueue()
                     nextDirection = self._ai.getDirection()
-                    self.processInput(0, nextDirection)
+                    self._process_input(0, nextDirection)
                 else:
                     #TODO: Make this so the game updates on action done, so that snake moves immediately
                     for event in pygame.event.get():
@@ -100,7 +102,10 @@ class GameHandler:
                             #print(joystick_id, axis, position)
                             direction = self.convertBTInputToDirection(axis, position)
                             if direction is not None:
-                                self.processInput(joystick_id, direction)
+                                self._process_input(joystick_id, direction)
+                        elif event.type == pygame.JOYBUTTONDOWN:
+                            button = event.button        
+                            self._process_button_down(button)
                 if current_time - self._last_move_time >= SNAKE_SPEED:
                     self._last_move_time = current_time  # reset move timer
                     self._game.proceed()
@@ -130,10 +135,10 @@ class GameHandler:
                             else:
                                 self._ai.refillQueue()
                                 if nextDirection:
-                                    self.processInput(nextDirection)
+                                    self._process_input(nextDirection)
                                 else:
                                     nextDirection = self._ai.getDirection()
-                                    self.processInput(nextDirection)
+                                    self._process_input(nextDirection)
                                 self._game.proceed()
                                 self.update()
                 else:
@@ -148,7 +153,7 @@ class GameHandler:
                             #print(joystick_id, axis, position)
                             direction = self.convertBTInputToDirection(axis, position)
                             if direction is not None:
-                                self.processInput(joystick_id, direction)
+                                self._process_input(joystick_id, direction)
                         elif event.type == pygame.JOYBUTTONDOWN: #debugging purposes
                             button = event.button         # Axis number (0 for horizontal, 1 for vertical)
                             if button == 1:
@@ -172,9 +177,13 @@ class GameHandler:
 
         return closest_direction
 
-    def processInput(self, snakeNumber, input):
+    def _process_input(self, snakeNumber, input):
         if DIRECTIONS.get(input):
             self._game.changeDirection(snakeNumber, input)
+
+    def _process_button_down(self, input):
+        if input == ControllerMap.START.value:
+            self._running = False
 
     def drawPixel(self, x, y, color):
         if PI:
