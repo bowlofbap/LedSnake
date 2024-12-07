@@ -160,6 +160,8 @@ class GameHandler:
                                 self._game.proceed()
                     self.update()
             self._clock.tick(30)
+        self.clear()
+        self.updateScreen()
 
     def convertBTInputToDirection(self, rawInputX, rawInputY):
         if rawInputY == 0: 
@@ -270,3 +272,4 @@ class GameHandler:
         self.drawSnakes()
         self.drawApples()
         self.updateScreen()
+
