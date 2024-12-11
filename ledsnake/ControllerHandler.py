@@ -100,6 +100,9 @@ class ControllerHandler:
                             direction = self.convert_bt_inputs_to_direction(axis, position)
                             if direction is not None:
                                 self._process_input(joystick_id, direction)
+                                self._last_move_time = current_time
+                                self._game.proceed()
+                                self._board_handler.update()
                         elif event.type == pygame.JOYBUTTONDOWN:
                             button = event.button        
                             self._process_button_down(button)
