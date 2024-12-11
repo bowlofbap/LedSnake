@@ -7,7 +7,7 @@ from .ControllerHandler import ControllerHandler
 def run_game(debug, multiplayer, ai):
     if ai:
         multiplayer = False
-        controller_handler = ControllerHandler(WIDTH, HEIGHT, ai = ai, multiplayer = multiplayer, debug = debug)
+    controller_handler = ControllerHandler(WIDTH, HEIGHT, ai = ai, multiplayer = multiplayer, debug = debug)
     try:
         controller_handler.start_game()
     except KeyboardInterrupt:

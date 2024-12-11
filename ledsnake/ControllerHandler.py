@@ -27,7 +27,7 @@ class ControllerHandler:
 
         self._joysticks         = []
         self._game = SnakeGame(width, height, True, 2 if multiplayer else 1) 
-        self._board_handler = BoardHandler(self._game)
+        self._board_handler = BoardHandler(self._game, width, height)
         self._height = height
         self._width = width
         self._ai = SnakeAI(self._game) if ai else False
@@ -78,7 +78,7 @@ class ControllerHandler:
             screen = pygame.display.set_mode((1,1))
 
     def loop(self):
-        self.update()
+        self._board_handler.update()
         self._last_move_time = time.time()
         while self._running:
             current_time = time.time()
