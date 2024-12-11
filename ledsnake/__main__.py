@@ -1,18 +1,18 @@
 from .constants import WIDTH, HEIGHT
 import argparse
-from .GameHandler import GameHandler
+from .ControllerHandler import ControllerHandler
 
 #old way to run the game if you wanna run it manually, go through this file and run game.py
 
 def run_game(debug, multiplayer, ai):
     if ai:
         multiplayer = False
-    gameHandler = GameHandler(WIDTH, HEIGHT, ai = ai, multiplayer = multiplayer, debug = debug)
+        controller_handler = ControllerHandler(WIDTH, HEIGHT, ai = ai, multiplayer = multiplayer, debug = debug)
     try:
-        gameHandler.startGame()
+        controller_handler.start_game()
     except KeyboardInterrupt:
-        gameHandler.clear()
-        gameHandler.updateScreen()
+        controller_handler.clear()
+        controller_handler.update_screen()
 
 # Main program logic follows:
 if __name__ == '__main__':
