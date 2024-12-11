@@ -77,6 +77,10 @@ class BoardHandler:
     def update_screen(self):
         self._pixels.show()
 
+    def clear_screen(self):
+        self.clear()
+        self.update_screen()
+
     #main update that gets called during the loop to update the screen
     def update(self):
         self.clear()

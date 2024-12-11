@@ -157,6 +157,7 @@ class ControllerHandler:
                                 self._game.proceed()
                     self.update()
             self._clock.tick(30)
+        self._board_handler.clear_screen()
 
     def convert_bt_inputs_to_direction(self, rawInputX, rawInputY):
         if rawInputY == 0: 
